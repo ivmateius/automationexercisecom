@@ -1,65 +1,67 @@
 package vio.ionut.tests;
 
-import net.bytebuddy.implementation.bytecode.Throw;
-import org.openqa.selenium.By;
+import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 import org.testng.annotations.AfterTest;
+import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
-
-import java.time.Duration;
+import vio.ionut.pages.HomePage;
+import vio.ionut.pages.SignUpPage;
+import vio.ionut.pages.AccountCreationPage;
 
 public class TC1RegisterUser {
+
+    private WebDriver driver;
+    private HomePage homePage;
+    private SignUpPage signUpPage;
+    private AccountCreationPage accountCreationPage;
+
+    @BeforeTest
+    public void setUp() {
+        // Setup WebDriverManager to automatically manage the ChromeDriver
+        WebDriverManager.chromedriver().setup();
+
+        driver = new ChromeDriver();
+        driver.manage().window().maximize();
+
+        // Initialize Page Objects
+        homePage = new HomePage(driver);
+    }
+
     @Test
-    public void RegisterUser() throws InterruptedException {
+    public void registerUser() {
         String userName = "VioTest";
         String emailRegister = "vio@vio.vio";
 
-       WebDriver driver= new ChromeDriver();
-        driver.manage().window().maximize();
+        // Step 1: Open the homepage
         driver.get("https://www.automationexercise.com/");
 
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
-        WebElement consentPopUp = driver.findElement(By.cssSelector(".fc-button.fc-cta-consent.fc-primary-button"));
-        consentPopUp.click();
+        // Step 2: Accept consent pop-up
+        homePage.acceptConsentPopUp();
 
-        WebElement goToSignupRegister = driver.findElement(By.cssSelector("a[href='/login'"));
-        goToSignupRegister.click();
+        // Step 3: Navigate to sign-up page
+        signUpPage = homePage.goToSignUpPage();
 
-        WebElement signUpName = driver.findElement(By.cssSelector("input[data-qa='signup-name']\n"));
-        signUpName.sendKeys(userName);
+        // Step 4: Enter user details
+        signUpPage.enterUserDetails(userName, emailRegister);
 
-        WebElement signUpEmail = driver.findElement(By.cssSelector("input[data-qa='signup-email']"));
-        signUpEmail.sendKeys(emailRegister);
+        // Step 5: Verify sign-up header text
+        Assert.assertEquals(signUpPage.getSignUpHeaderText(), "New User Signup!", "Text not matching!");
 
-        WebElement getTextSignUp = driver.findElement(By.cssSelector("div.signup-form>h2"));
-        if (getTextSignUp.isDisplayed()){
-            Assert.assertEquals(getTextSignUp.getText(), "New User Signup!", "Text not ok");
-        }else {
-            throw new AssertionError("Text now displayed");
-        }
+        // Step 6: Go to account creation page
+        accountCreationPage = signUpPage.goToAccountCreationPage();
 
-        WebElement signUpButton = driver.findElement(By.cssSelector("button[data-qa='signup-button']"));
-        signUpButton.click();
-
-        WebElement enterAccInfoText = driver.findElement(By.cssSelector("div.login-form>h2"));
-        if (enterAccInfoText.isDisplayed()){
-            Assert.assertEquals(enterAccInfoText.getText(),"ENTER ACCOUNT INFORMATION", "Failed");
-
-        }else {
-            throw new AssertionError("Text not displayed");
-        }
-
-        
-
-        driver.quit();
-
-
+        // Step 7: Verify account creation header text
+        Assert.assertEquals(accountCreationPage.getAccountInfoHeaderText(), "ENTER ACCOUNT INFORMATION", "Text not matching!");
     }
 
-
-
+    @AfterTest
+    public void tearDown() {
+        // Quit the driver after test completion
+        if (driver != null) {
+            driver.quit();
+        }
+    }
 }
