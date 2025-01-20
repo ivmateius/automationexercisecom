@@ -1,4 +1,4 @@
-package vio.ionut.pages;
+package vio.ionut.pageobject;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -12,10 +12,10 @@ public class AccountCreationPage {
         this.driver = driver;
     }
 
-    // Locators for elements on the account creation page
-    private By accountInfoHeader = By.cssSelector("div.login-form>h2");
+    // Locators for the account creation page
+    private final By accountInfoHeader = By.cssSelector("div.login-form>h2");
 
-    // Actions that can be performed on the account creation page
+    // Actions on the account creation page
     public String getAccountInfoHeaderText() {
         return driver.findElement(accountInfoHeader).getText();
     }

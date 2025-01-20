@@ -1,34 +1,16 @@
 package vio.ionut.tests;
 
-import io.github.bonigarcia.wdm.WebDriverManager;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
 import org.testng.Assert;
-import org.testng.annotations.AfterTest;
-import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
-import vio.ionut.pages.HomePage;
-import vio.ionut.pages.SignUpPage;
-import vio.ionut.pages.AccountCreationPage;
+import vio.ionut.pageobject.HomePage;
+import vio.ionut.pageobject.SignUpPage;
+import vio.ionut.pageobject.AccountCreationPage;
 
-public class TC1RegisterUser {
+public class TC1RegisterUser extends BaseTest {
 
-    private WebDriver driver;
     private HomePage homePage;
     private SignUpPage signUpPage;
     private AccountCreationPage accountCreationPage;
-
-    @BeforeTest
-    public void setUp() {
-        // Setup WebDriverManager to automatically manage the ChromeDriver
-        WebDriverManager.chromedriver().setup();
-
-        driver = new ChromeDriver();
-        driver.manage().window().maximize();
-
-        // Initialize Page Objects
-        homePage = new HomePage(driver);
-    }
 
     @Test
     public void registerUser() {
@@ -37,6 +19,9 @@ public class TC1RegisterUser {
 
         // Step 1: Open the homepage
         driver.get("https://www.automationexercise.com/");
+
+        // Initialize HomePage object
+        homePage = new HomePage(driver);
 
         // Step 2: Accept consent pop-up
         homePage.acceptConsentPopUp();
@@ -55,13 +40,5 @@ public class TC1RegisterUser {
 
         // Step 7: Verify account creation header text
         Assert.assertEquals(accountCreationPage.getAccountInfoHeaderText(), "ENTER ACCOUNT INFORMATION", "Text not matching!");
-    }
-
-    @AfterTest
-    public void tearDown() {
-        // Quit the driver after test completion
-        if (driver != null) {
-            driver.quit();
-        }
     }
 }

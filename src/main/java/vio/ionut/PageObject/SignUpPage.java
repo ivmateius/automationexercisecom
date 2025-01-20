@@ -1,8 +1,7 @@
-package vio.ionut.pages;
+package vio.ionut.pageobject;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
 
 public class SignUpPage {
 
@@ -13,29 +12,24 @@ public class SignUpPage {
         this.driver = driver;
     }
 
-    // Locators for elements on the sign-up page
-    private By userNameField = By.cssSelector("input[data-qa='signup-name']");
-    private By emailField = By.cssSelector("input[data-qa='signup-email']");
-    private By signUpButton = By.cssSelector("button[data-qa='signup-button']");
-    private By signUpHeaderText = By.cssSelector("div.signup-form>h2");
+    // Locators for sign-up page
+    private final By signUpHeader = By.cssSelector("div.signup-form>h2");
+    private final By userNameField = By.cssSelector("input[data-qa='signup-name']");
+    private final By emailField = By.cssSelector("input[data-qa='signup-email']");
+    private final By signUpButton = By.cssSelector("button[data-qa='signup-button']");
 
-    // Actions that can be performed on the sign-up page
+    // Actions on the sign-up page
+    public String getSignUpHeaderText() {
+        return driver.findElement(signUpHeader).getText();
+    }
+
     public void enterUserDetails(String userName, String email) {
         driver.findElement(userNameField).sendKeys(userName);
         driver.findElement(emailField).sendKeys(email);
     }
 
-    public void clickSignUpButton() {
-        driver.findElement(signUpButton).click();
-    }
-
-    public String getSignUpHeaderText() {
-        return driver.findElement(signUpHeaderText).getText();
-    }
-
-    // This returns the next page object (AccountCreationPage) after the user clicks sign-up button
     public AccountCreationPage goToAccountCreationPage() {
-        clickSignUpButton();
-        return new AccountCreationPage(driver);
+        driver.findElement(signUpButton).click();
+        return new AccountCreationPage(driver); // Returning the next page object
     }
 }

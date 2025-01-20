@@ -1,8 +1,7 @@
-package vio.ionut.pages;
+package vio.ionut.pageobject;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
 
 public class HomePage {
 
@@ -13,18 +12,17 @@ public class HomePage {
         this.driver = driver;
     }
 
-    // Locators for elements on the homepage
-    private By consentPopUp = By.cssSelector(".fc-button.fc-cta-consent.fc-primary-button");
-    private By signUpLoginButton = By.cssSelector("a[href='/login']");
+    // Locators for homepage elements
+    private final By consentPopUp = By.cssSelector(".fc-button.fc-cta-consent.fc-primary-button");
+    private final By signUpLink = By.cssSelector("a[href='/login']");
 
-    // Actions that can be performed on the homepage
+    // Actions on the homepage
     public void acceptConsentPopUp() {
-        WebElement consentButton = driver.findElement(consentPopUp);
-        consentButton.click();
+        driver.findElement(consentPopUp).click();
     }
 
     public SignUpPage goToSignUpPage() {
-        driver.findElement(signUpLoginButton).click();
-        return new SignUpPage(driver); // Returning SignUpPage object to perform actions on the SignUp page
+        driver.findElement(signUpLink).click();
+        return new SignUpPage(driver); // Returning the next page object
     }
 }
